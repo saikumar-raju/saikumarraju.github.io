@@ -1,47 +1,52 @@
-// ------------------------------------------------------
-//  DARK / LIGHT THEME TOGGLE
-// ------------------------------------------------------
+// ======================================================
+//  THEME TOGGLE (Dark / Light Mode)
+// ======================================================
+const themeToggle = document.getElementById("themeToggle");
 
-const themeToggleBtn = document.getElementById("themeToggle");
-const body = document.body;
+themeToggle.addEventListener("click", () => {
+  document.body.classList.toggle("light");
 
-// Load saved theme from localStorage (if any)
-const savedTheme = localStorage.getItem("theme");
-if (savedTheme === "light") {
-  body.classList.add("light");
-  themeToggleBtn.textContent = "🌙"; // show moon when light is active
-} else {
-  themeToggleBtn.textContent = "☀️";
-}
-
-// Toggle theme on button click
-themeToggleBtn.addEventListener("click", () => {
-  body.classList.toggle("light");
-
-  // Update icon + save preference
-  if (body.classList.contains("light")) {
-    themeToggleBtn.textContent = "🌙";
+  // Save preference
+  if (document.body.classList.contains("light")) {
     localStorage.setItem("theme", "light");
+    themeToggle.textContent = "🌙"; // moon icon for dark toggle
   } else {
-    themeToggleBtn.textContent = "☀️";
     localStorage.setItem("theme", "dark");
+    themeToggle.textContent = "☀️"; // sun icon for light toggle
   }
 });
 
-// ------------------------------------------------------
-//  SMOOTH SCROLL FOR NAV LINKS
-// ------------------------------------------------------
+// Load saved theme on page load
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "light") {
+  document.body.classList.add("light");
+  themeToggle.textContent = "🌙";
+} else {
+  themeToggle.textContent = "☀️";
+}
 
-document.querySelectorAll('nav a[href^="#"]').forEach(link => {
-  link.addEventListener("click", e => {
+
+
+// ======================================================
+//  SMOOTH SCROLL FOR NAVIGATION LINKS
+// ======================================================
+document.querySelectorAll('.nav-link[href^="#"]').forEach(link => {
+  link.addEventListener("click", (e) => {
     e.preventDefault();
     const targetId = link.getAttribute("href").substring(1);
-    const target = document.getElementById(targetId);
-    if (!target) return;
+    const section = document.getElementById(targetId);
 
-    window.scrollTo({
-      top: target.offsetTop - 80, // adjust for navbar height
-      behavior: "smooth"
-    });
+    if (section) {
+      window.scrollTo({
+        top: section.offsetTop - 80, // offset for navbar height
+        behavior: "smooth"
+      });
+    }
   });
 });
+
+
+// ======================================================
+//  AUTO UPDATE FOOTER YEAR
+// ======================================================
+document.getElementById("year").textContent = new Date().getFullYear();
