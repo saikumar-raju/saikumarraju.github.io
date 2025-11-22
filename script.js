@@ -1,34 +1,47 @@
-// script.js
-// Small helpers: active menu & current year
+// ------------------------------------------------------
+//  DARK / LIGHT THEME TOGGLE
+// ------------------------------------------------------
 
-document.addEventListener("DOMContentLoaded", () => {
-  // 1) set footer year
-  const yearSpan = document.getElementById("year");
-  if (yearSpan) {
-    yearSpan.textContent = new Date().getFullYear();
+const themeToggleBtn = document.getElementById("themeToggle");
+const body = document.body;
+
+// Load saved theme from localStorage (if any)
+const savedTheme = localStorage.getItem("theme");
+if (savedTheme === "light") {
+  body.classList.add("light");
+  themeToggleBtn.textContent = "🌙"; // show moon when light is active
+} else {
+  themeToggleBtn.textContent = "☀️";
+}
+
+// Toggle theme on button click
+themeToggleBtn.addEventListener("click", () => {
+  body.classList.toggle("light");
+
+  // Update icon + save preference
+  if (body.classList.contains("light")) {
+    themeToggleBtn.textContent = "🌙";
+    localStorage.setItem("theme", "light");
+  } else {
+    themeToggleBtn.textContent = "☀️";
+    localStorage.setItem("theme", "dark");
   }
+});
 
-  // 2) highlight nav link based on scroll position
-  const sections = document.querySelectorAll("section[id]");
-  const navLinks = document.querySelectorAll(".nav-link");
+// ------------------------------------------------------
+//  SMOOTH SCROLL FOR NAV LINKS
+// ------------------------------------------------------
 
-  function onScroll() {
-    const scrollY = window.scrollY;
+document.querySelectorAll('nav a[href^="#"]').forEach(link => {
+  link.addEventListener("click", e => {
+    e.preventDefault();
+    const targetId = link.getAttribute("href").substring(1);
+    const target = document.getElementById(targetId);
+    if (!target) return;
 
-    sections.forEach((section) => {
-      const rect = section.getBoundingClientRect();
-      const top = rect.top + window.scrollY - 120; // offset for sticky nav
-      const bottom = top + section.offsetHeight;
-      const id = section.getAttribute("id");
-
-      if (scrollY >= top && scrollY < bottom) {
-        navLinks.forEach((link) => {
-          link.classList.toggle("active", link.getAttribute("href") === `#${id}`);
-        });
-      }
+    window.scrollTo({
+      top: target.offsetTop - 80, // adjust for navbar height
+      behavior: "smooth"
     });
-  }
-
-  window.addEventListener("scroll", onScroll);
-  onScroll(); // run once on load
+  });
 });
